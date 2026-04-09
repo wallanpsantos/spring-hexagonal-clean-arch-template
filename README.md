@@ -23,14 +23,14 @@ domain ← app ← interfaces
 
 ## Stack
 
-- Java 21
-- Spring Boot 3.x
+- Java 21 ou Java 25
+- Spring Boot 4.x
 - Spring Data JPA
 - OpenFeign
 - Apache Kafka
 - MapStruct
 - Flyway
-- OpenAPI 3 (Swagger)
+- OpenAPI (Swagger)
 
 ## Como usar
 
