@@ -1,49 +1,91 @@
-name: Build and Test Java Multi-Module Project
+name: CI
+
+# Gatilhos: push e PR nas branches principais
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# Cancela runs redundantes na mesma branch/PR para economizar minutos do runner.
+# Runs na main nunca são canceladas — garantia de histórico de builds.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 permissions:
   contents: read
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
 jobs:
-  build_and_test:
+
+  # ---------------------------------------------------------------------------
+  # Job único: build + testes unitários + testes de integração + quality gate
+  #
+  # Um único job é suficiente para projetos single-module.
+  # O comando "verify" já executa na ordem correta:
+  #   compile → test (Surefire) → package → integration-test (Failsafe) → verify (JaCoCo gate)
+  # ---------------------------------------------------------------------------
+  build-and-test:
+    name: Build, Test & Quality Gate
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v4 # Checkout do código
 
-      - name: Set up JDK 21
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # setup-java com cache: maven gerencia o ~/.m2 automaticamente —
+      # substitui o step manual de actions/cache, que era redundante.
+      - name: Configurar JDK 25
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: temurin
+          java-version: '25'
+          cache: maven
 
-      - name: Cache Maven packages
-        uses: actions/cache@v4
+      # Um único comando substitui os três separados do pipeline anterior
+      # (clean install → test → package), que eram redundantes e executavam
+      # o build duas vezes. O ciclo "verify" cobre tudo:
+      #   -B                    → batch mode, sem prompts interativos
+      #   --no-transfer-progress → logs limpos, sem spam de download de deps
+      - name: Build, testes e gate de cobertura
+        run: ./mvnw -B --no-transfer-progress clean verify
+
+      # if: always() garante que os relatórios chegam mesmo quando o build falha —
+      # essencial para inspecionar quais testes quebraram no PR.
+      - name: Publicar relatório dos testes unitários (Surefire)
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          name: surefire-reports
+          path: target/surefire-reports/
+          if-no-files-found: ignore
 
-      - name: Build with Maven
-        run: mvn -B clean install
+      - name: Publicar relatório dos testes de integração (Failsafe)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failsafe-reports
+          path: target/failsafe-reports/
+          if-no-files-found: ignore
 
-      - name: Run Tests
-        run: mvn test
+      # Relatório HTML navegável do JaCoCo — útil para inspecionar
+      # quais linhas/branches não foram cobertas quando o gate de 80% falha.
+      - name: Publicar relatório de cobertura (JaCoCo)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+          if-no-files-found: ignore
 
-      - name: Package Application
-        run: mvn package
-
-      - name: Archive build artifacts
+      # target/*.jar (sem **) garante que só o JAR do módulo raiz é publicado.
+      # O padrão anterior **/target/*.jar capturava JARs internos de
+      # sub-módulos e dependências desempacotadas.
+      - name: Publicar artefato JAR
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: jar-files
-          path: '**/target/*.jar'
+          name: app-jar
+          path: target/*.jar
+          if-no-files-found: error
