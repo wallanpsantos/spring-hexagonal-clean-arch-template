@@ -52,9 +52,9 @@ Ver [ARCHITECTURE.md](./ARCHITECTURE.md) para descrição detalhada de cada paco
 - **Domain-Driven Design (DDD)**: Eric Evans, 2003. Entidades ricas, value objects e bounded contexts.[web:42]
 
 ### 📰 Artigos recomendados
-- [EngSoftModerna: Arquitetura Hexagonal](https://engsoftmoderna.info/artigos/arquitetura-hexagonal.html) — portas de entrada/saída.[web:17]
-- [Dev.to: Arquitetura Hexagonal explicada](https://dev.to/pmafra/arquitetura-hexagonal-explicada-como-transformar-seu-desenvolvimento-de-software-43d9) — isolamento do core.[web:16]
-- [Herberto Graca: DDD + Hexagonal + Clean](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/) — package by feature.[web:18]
+- [EngSoftModerna: Arquitetura Hexagonal](https://engsoftmoderna.info/artigos/arquitetura-hexagonal.html) — portas de entrada/saída.
+- [Dev.to: Arquitetura Hexagonal explicada](https://dev.to/pmafra/arquitetura-hexagonal-explicada-como-transformar-seu-desenvolvimento-de-software-43d9) — isolamento do core.
+- [Herberto Graca: DDD + Hexagonal + Clean](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/) — package by feature.
 
 ### 💻 Exemplos open-source
-- [Sairyss/domain-driven-hexagon](https://github.com/Sairyss/domain-driven-hexagon) — Java + Hexagonal + DDD.[web:19]
+- [Sairyss/domain-driven-hexagon](https://github.com/Sairyss/domain-driven-hexagon) — Java + Hexagonal + DDD.
