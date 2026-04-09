@@ -15,8 +15,8 @@ Template de arquitetura Java 21 + Spring Boot orientado a subdomínios, traduzin
 
 ```
 domain ← app ← interfaces
-               ↑
-             infra
+                   ↑
+                 infra
 ```
 
 > O `domain` não conhece ninguém. O `infra` conhece todos. As setas indicam direção de dependência.
@@ -43,3 +43,18 @@ git clone https://github.com/wallanpsantos/spring-hexagonal-clean-arch-template.
 ## Estrutura de Pacotes
 
 Ver [ARCHITECTURE.md](./ARCHITECTURE.md) para descrição detalhada de cada pacote.
+
+## Referências
+
+### 📚 Livros fundamentais
+- **Hexagonal Architecture (Ports & Adapters)**: Alistair Cockburn, 2005. Define portas de entrada/saída e adaptadores simétricos.[web:31]
+- **Clean Architecture**: Robert C. Martin (Uncle Bob), 2017. Camadas concêntricas com inversão de dependência.[web:36]
+- **Domain-Driven Design (DDD)**: Eric Evans, 2003. Entidades ricas, value objects e bounded contexts.[web:42]
+
+### 📰 Artigos recomendados
+- [EngSoftModerna: Arquitetura Hexagonal](https://engsoftmoderna.info/artigos/arquitetura-hexagonal.html) — portas de entrada/saída.[web:17]
+- [Dev.to: Arquitetura Hexagonal explicada](https://dev.to/pmafra/arquitetura-hexagonal-explicada-como-transformar-seu-desenvolvimento-de-software-43d9) — isolamento do core.[web:16]
+- [Herberto Graca: DDD + Hexagonal + Clean](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/) — package by feature.[web:18]
+
+### 💻 Exemplos open-source
+- [Sairyss/domain-driven-hexagon](https://github.com/Sairyss/domain-driven-hexagon) — Java + Hexagonal + DDD.[web:19]
